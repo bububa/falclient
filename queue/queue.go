@@ -3,7 +3,9 @@ package queue
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/coder/websocket"
@@ -54,6 +56,10 @@ func (q *Queue) fetch(_ context.Context, req *http.Request, resp any) error {
 		return err
 	}
 	defer httpResp.Body.Close()
+	if httpResp.StatusCode != 200 {
+		msg, _ := io.ReadAll(httpResp.Body)
+		return errors.New(string(msg))
+	}
 	// bs, _ := io.ReadAll(httpResp.Body)
 	// fmt.Println(string(bs))
 	// return json.Unmarshal(bs, resp)
