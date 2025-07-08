@@ -56,7 +56,7 @@ func (q *Queue) fetch(_ context.Context, req *http.Request, resp any) error {
 		return err
 	}
 	defer httpResp.Body.Close()
-	if httpResp.StatusCode >= 200 && httpResp.StatusCode < 300 {
+	if httpResp.StatusCode < 200 && httpResp.StatusCode >= 300 {
 		msg, _ := io.ReadAll(httpResp.Body)
 		return errors.New(string(msg))
 	}
